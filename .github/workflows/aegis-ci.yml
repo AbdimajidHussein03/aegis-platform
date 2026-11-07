@@ -1,0 +1,46 @@
+name: Aegis CI - Build Images
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.component }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: backend
+            context: ./hi-events/backend
+            dockerfile: ./hi-events/backend/Dockerfile
+
+          - component: frontend
+            context: ./hi-events/frontend
+            dockerfile: ./hi-events/frontend/Dockerfile.ssr
+
+    steps:
+      - name: Checkout Aegis repository
+        uses: actions/checkout@v4
+
+      - name: Checkout pinned Hi.Events source
+        uses: actions/checkout@v4
+        with:
+          repository: HiEventsDev/hi.events
+          ref: 303f4cc0cd5786a1807e1e2485e1c0ae27637b36
+          path: hi-events
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: aegis-${{ matrix.component }}:ci
