@@ -1,0 +1,29 @@
+# Terraform local files
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfvars
+**/*.tfvars.json
+**/crash.log
+**/crash.*.log
+
+# Terraform override files
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+
+# Environment files and credentials
+.env
+.env.*
+*.pem
+*.key
+*secret*.yaml
+
+# Helm generated packages
+*.tgz
+
+backups/
+
+# Terraform plan files
+**/*.tfplan

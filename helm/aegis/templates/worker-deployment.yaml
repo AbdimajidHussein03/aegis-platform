@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: worker
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: worker
+
+  template:
+    metadata:
+      labels:
+        app: worker
+
+    spec:
+      containers:
+        - name: worker
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+
+          command:
+            - php
+            - artisan
+            - queue:work
+
+          args:
+            - {{ printf "--sleep=%v" .Values.worker.queue.sleep | quote }}
+            - {{ printf "--tries=%v" .Values.worker.queue.tries | quote }}
+            - {{ printf "--max-time=%v" .Values.worker.queue.maxTime | quote }}
+            - {{ printf "--memory=%v" .Values.worker.queue.memory | quote }}
+            - {{ printf "--queue=%s" .Values.worker.queue.names | quote }}
+
+          envFrom:
+            - configMapRef:
+                name: backend-config
+
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: APP_KEY
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: JWT_SECRET
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: MAIL_MAILER
+              value: {{ .Values.worker.mailMailer | quote }}

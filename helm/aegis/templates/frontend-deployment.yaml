@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: frontend
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: frontend
+
+  template:
+    metadata:
+      labels:
+        app: frontend
+
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.frontend.port }}
+
+          env:
+            - name: VITE_API_URL_SERVER
+              value: {{ .Values.frontend.api.serverUrl | quote }}
+
+            - name: VITE_API_URL_CLIENT
+              value: {{ .Values.frontend.api.clientUrl | quote }}
+
+            - name: VITE_FRONTEND_URL
+              value: {{ .Values.frontend.url | quote }}

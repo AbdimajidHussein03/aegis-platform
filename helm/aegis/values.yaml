@@ -1,0 +1,101 @@
+backend:
+  replicaCount: 1
+
+  database:
+    connection: pgsql
+    host: postgres
+    port: 5432
+    name: hievents
+    username: hievents
+
+  redis:
+    host: redis
+    port: 6379
+
+  queue:
+    connection: redis
+
+  filesystem:
+    disk: local
+    publicDisk: public
+    privateDisk: local
+
+  logging:
+    channel: stderr
+
+  image:
+    repository: acraegisdev01.azurecr.io/aegis-backend
+    tag: v1
+    pullPolicy: IfNotPresent
+
+frontend:
+  replicaCount: 1
+
+  image:
+    repository: acraegisdev01.azurecr.io/aegis-frontend
+    tag: v1
+    pullPolicy: IfNotPresent
+
+  port: 5678
+
+  api:
+    serverUrl: "http://backend:8080"
+    clientUrl: "http://localhost:8080"
+
+  url: "http://localhost:5678"
+
+postgres:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: 17-alpine
+    pullPolicy: IfNotPresent
+
+  port: 5432
+
+  storage:
+    existingClaim: postgres-data
+    mountPath: /var/lib/postgresql/data
+    pgdata: /var/lib/postgresql/data/pgdata
+
+  secretName: postgres-secret
+
+redis:
+  replicaCount: 1
+
+  image:
+    repository: redis
+    tag: 7-alpine
+    pullPolicy: IfNotPresent
+
+  port: 6379
+
+worker:
+  replicaCount: 1
+
+  image:
+    repository: acraegisdev01.azurecr.io/aegis-backend
+    tag: v1
+    pullPolicy: IfNotPresent
+
+  queue:
+    sleep: 3
+    tries: 3
+    maxTime: 3600
+    memory: 512
+    names: "default,webhooks"
+
+  mailMailer: log
+
+scheduler:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  restartPolicy: OnFailure
+
+  image:
+    repository: acraegisdev01.azurecr.io/aegis-backend
+    tag: v1
+    pullPolicy: IfNotPresent

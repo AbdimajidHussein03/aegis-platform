@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: scheduler
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  schedule: {{ .Values.scheduler.schedule | quote }}
+  concurrencyPolicy: {{ .Values.scheduler.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.scheduler.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.scheduler.failedJobsHistoryLimit }}
+
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: {{ .Values.scheduler.restartPolicy }}
+
+          containers:
+            - name: scheduler
+              image: "{{ .Values.scheduler.image.repository }}:{{ .Values.scheduler.image.tag }}"
+              imagePullPolicy: {{ .Values.scheduler.image.pullPolicy }}
+
+              command:
+                - php
+                - artisan
+                - schedule:run
+                - "--verbose"
+                - "--no-interaction"
+
+              envFrom:
+                - configMapRef:
+                    name: backend-config
+
+              env:
+                - name: APP_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: APP_KEY
+
+                - name: JWT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backend-secret
+                      key: JWT_SECRET
+
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: POSTGRES_PASSWORD

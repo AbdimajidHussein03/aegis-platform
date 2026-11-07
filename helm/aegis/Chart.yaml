@@ -1,0 +1,6 @@
+apiVersion: v2
+name: aegis
+description: Helm chart for the Aegis Hi.Events application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

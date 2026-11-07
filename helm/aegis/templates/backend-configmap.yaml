@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: backend-config
+  namespace: {{ .Release.Namespace }}
+
+data:
+  # PostgreSQL
+  DB_CONNECTION: {{ .Values.backend.database.connection | quote }}
+  DB_HOST: {{ .Values.backend.database.host | quote }}
+  DB_PORT: {{ .Values.backend.database.port | quote }}
+  DB_DATABASE: {{ .Values.backend.database.name | quote }}
+  DB_USERNAME: {{ .Values.backend.database.username | quote }}
+
+  # Redis
+  REDIS_HOST: {{ .Values.backend.redis.host | quote }}
+  REDIS_PORT: {{ .Values.backend.redis.port | quote }}
+
+  # Queue
+  QUEUE_CONNECTION: {{ .Values.backend.queue.connection | quote }}
+
+  # Filesystem
+  FILESYSTEM_DISK: {{ .Values.backend.filesystem.disk | quote }}
+  FILESYSTEM_PUBLIC_DISK: {{ .Values.backend.filesystem.publicDisk | quote }}
+  FILESYSTEM_PRIVATE_DISK: {{ .Values.backend.filesystem.privateDisk | quote }}
+
+  # Logging
+  LOG_CHANNEL: {{ .Values.backend.logging.channel | quote }}
