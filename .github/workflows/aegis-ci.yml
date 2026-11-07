@@ -19,10 +19,12 @@ jobs:
           - component: backend
             context: ./hi-events/backend
             dockerfile: ./hi-events/backend/Dockerfile
+            security_exit_code: '1'
 
           - component: frontend
             context: ./hi-events/frontend
             dockerfile: ./hi-events/frontend/Dockerfile.ssr
+            security_exit_code: '0'
 
     steps:
       - name: Checkout Aegis repository
@@ -55,7 +57,8 @@ jobs:
           output: trivy-${{ matrix.component }}.json
           severity: HIGH,CRITICAL
           vuln-type: os,library
-          exit-code: '0'
+          ignore-unfixed: true
+          exit-code: ${{ matrix.security_exit_code }}
 
       - name: Upload Trivy vulnerability report
         if: always()
@@ -67,6 +70,7 @@ jobs:
           retention-days: 14
 
       - name: Generate SBOM with Trivy
+        if: always()
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: aegis-${{ matrix.component }}:ci
