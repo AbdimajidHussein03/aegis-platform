@@ -1,4 +1,5 @@
-name: Aegis CI - Build Images
+
+name: Aegis CI - Build and Security Scan
 
 on:
   workflow_dispatch:
@@ -8,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    name: Build ${{ matrix.component }}
+    name: Build and Scan ${{ matrix.component }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,7 +28,7 @@ jobs:
       - name: Checkout Aegis repository
         uses: actions/checkout@v4
 
-      - name: Checkout pinned Hi.Events source
+      - name: Checkout Hi.Events source
         uses: actions/checkout@v4
         with:
           repository: HiEventsDev/hi.events
@@ -42,5 +43,42 @@ jobs:
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
+          load: true
           push: false
           tags: aegis-${{ matrix.component }}:ci
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: aegis-${{ matrix.component }}:ci
+          format: json
+          output: trivy-${{ matrix.component }}.json
+          severity: HIGH,CRITICAL
+          vuln-type: os,library
+          exit-code: '0'
+
+      - name: Upload Trivy vulnerability report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-${{ matrix.component }}-report
+          path: trivy-${{ matrix.component }}.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Generate SBOM with Trivy
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: aegis-${{ matrix.component }}:ci
+          format: cyclonedx
+          output: sbom-${{ matrix.component }}.json
+          exit-code: '0'
+
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ matrix.component }}
+          path: sbom-${{ matrix.component }}.json
+          if-no-files-found: warn
+          retention-days: 14
