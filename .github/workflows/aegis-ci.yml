@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: AbdimajidHussein03/Hi.Events
-          ref: 75d0061d
+          ref: security/aegis-backend-remediation
           path: hi-events
 
       - name: Set up Docker Buildx
