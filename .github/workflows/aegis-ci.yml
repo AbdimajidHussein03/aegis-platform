@@ -28,11 +28,11 @@ jobs:
       - name: Checkout Aegis repository
         uses: actions/checkout@v4
 
-      - name: Checkout Hi.Events source
+      - name: Checkout patched Hi.Events source
         uses: actions/checkout@v4
         with:
-          repository: HiEventsDev/hi.events
-          ref: 303f4cc0cd5786a1807e1e2485e1c0ae27637b36
+          repository: AbdimajidHussein03/Hi.Events
+          ref: 75d0061d
           path: hi-events
 
       - name: Set up Docker Buildx
