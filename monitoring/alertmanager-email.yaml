@@ -1,0 +1,49 @@
+alertmanager:
+  alertmanagerSpec:
+    secrets:
+      - aegis-smtp
+
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: smtp.gmail.com:587
+      smtp_from: abdimajid819@gmail.com
+      smtp_auth_username: abdimajid819@gmail.com
+      smtp_auth_password_file: /etc/alertmanager/secrets/aegis-smtp/password
+      smtp_require_tls: true
+
+    route:
+      receiver: gmail-alerts
+      group_by:
+        - namespace
+        - alertname
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      routes:
+        - matchers:
+            - alertname=~"Watchdog|InfoInhibitor"
+          receiver: "null"
+
+    receivers:
+      - name: "null"
+      - name: gmail-alerts
+        email_configs:
+          - to: abdimajid819@gmail.com
+            send_resolved: true
+
+    inhibit_rules:
+      - source_matchers:
+          - severity="critical"
+        target_matchers:
+          - severity=~"warning|info"
+        equal:
+          - namespace
+          - alertname
+      - source_matchers:
+          - severity="warning"
+        target_matchers:
+          - severity="info"
+        equal:
+          - namespace
+          - alertname
