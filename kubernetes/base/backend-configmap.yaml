@@ -1,0 +1,29 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: aegis
+
+data:
+  # PostgreSQL
+  DB_CONNECTION: "pgsql"
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_DATABASE: "hievents"
+  DB_USERNAME: "hievents"
+
+  # Redis
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+
+  # Queue
+  QUEUE_CONNECTION: "redis"
+
+  # Logging
+  LOG_CHANNEL: "stderr"
+
+  # Filesystem (development)
+  FILESYSTEM_DISK: "local"
+  FILESYSTEM_PUBLIC_DISK: "public"
+  FILESYSTEM_PRIVATE_DISK: "local"

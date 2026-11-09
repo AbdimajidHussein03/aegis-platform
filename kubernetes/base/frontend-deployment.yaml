@@ -1,0 +1,38 @@
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: frontend
+  namespace: aegis
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: frontend
+
+  template:
+    metadata:
+      labels:
+        app: frontend
+
+    spec:
+      containers:
+        - name: frontend
+          image: acraegisdev01.azurecr.io/aegis-frontend:v1
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5678
+
+          env:
+            - name: VITE_API_URL_SERVER
+              value: "http://backend:8080"
+
+            - name: VITE_API_URL_CLIENT
+              value: "http://localhost:8080"
+
+            - name: VITE_FRONTEND_URL
+              value: "http://localhost:5678"

@@ -1,0 +1,63 @@
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: worker
+  namespace: aegis
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: worker
+
+  template:
+    metadata:
+      labels:
+        app: worker
+
+    spec:
+      containers:
+        - name: worker
+          image: acraegisdev01.azurecr.io/aegis-backend:v1
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - php
+            - artisan
+            - queue:work
+
+          args:
+            - "--sleep=3"
+            - "--tries=3"
+            - "--max-time=3600"
+            - "--memory=512"
+            - "--queue=default,webhooks"
+
+          envFrom:
+            - configMapRef:
+                name: backend-config
+
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: APP_KEY
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: JWT_SECRET
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: MAIL_MAILER
+              value: "log"
