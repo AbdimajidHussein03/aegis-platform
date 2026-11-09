@@ -100,7 +100,8 @@ The Azure environment is defined under `terraform/environments/dev`, with reusab
 - **ACR module:** Azure Container Registry for container image storage.
 - **Environment composition:** brings the modules together and passes their outputs to dependent resources.
 
-![Azure infrastructure](https://github.com/user-attachments/assets/...)
+<img width="1291" height="790" alt="01-azure-infrastructure" src="https://github.com/user-attachments/assets/fd10f1a4-3a30-43e1-953b-d3f3793c9c40" />
+
 
 *Azure resource group showing the infrastructure created for the development platform. Subscription identifiers should be redacted before publishing the screenshot.*
 
@@ -152,7 +153,8 @@ Hi.Events is a useful platform workload because it involves more than a single s
 
 The workloads run in the `aegis` namespace. Internal Kubernetes Services provide stable names for communication between components, avoiding dependencies on individual pod IP addresses.
 
-![Kubernetes workloads running in the aegis namespace](docs/screenshots/02-kubernetes-workloads.png)
+<img width="1431" height="616" alt="02-kubernetes-workloads" src="https://github.com/user-attachments/assets/bcc05e7b-4222-4dd2-b626-0f29591a51ad" />
+
 
 *Workload inspection showing the application's running pods, Deployments, StatefulSet and Services. Completed scheduler jobs are expected for a CronJob. Pod restarts require their own investigation and should not be treated as proof of health.*
 
@@ -174,7 +176,8 @@ The `kubernetes/base` directory documents the underlying resource definitions an
 
 The workflow **Aegis CI - Build and Security Scan** runs separate frontend and backend jobs. A successful recorded workflow run completed both jobs and produced build artefacts. This gives a visible check of the application build path before configuration is reconciled into the cluster.
 
-![GitHub Actions frontend and backend build and scan jobs](docs/screenshots/10-github-actions-ci-security.png)
+<img width="1860" height="547" alt="10-github-actions-ci-security" src="https://github.com/user-attachments/assets/f4553763-d99e-4bd2-bdac-1b0764244b36" />
+
 
 *Successful GitHub Actions workflow showing the frontend and backend jobs. A green workflow indicates the configured jobs passed; it does not by itself establish that the deployed application passed an end-to-end test.*
 
@@ -184,7 +187,8 @@ The separation between CI and deployment is deliberate. A successful build shoul
 
 Argo CD manages the `aegis-dev` application and displays the difference between the declared configuration in Git and the resources running in Kubernetes. The application was observed in **Synced** and **Healthy** states during the project review.
 
-![Argo CD application tree in a Synced and Healthy state](docs/screenshots/03-argocd-gitops.png)
+<img width="1877" height="1042" alt="03-argocd-gitops" src="https://github.com/user-attachments/assets/7225799d-f58f-4245-a5bc-f625c8377440" />
+
 
 *Argo CD resource tree for `aegis-dev`. Personal email addresses or other identifying metadata should be redacted before publishing.*
 
@@ -200,7 +204,8 @@ A platform is difficult to operate without a clear view of what its workloads ar
 
 Prometheus collects metrics from Kubernetes and the monitoring components. During validation, the visible target page showed healthy **UP** targets, including the API server, CoreDNS, Grafana and Alertmanager.
 
-![Prometheus scrape target health](docs/screenshots/06-prometheus-targets.png)
+<img width="1902" height="1087" alt="06-prometheus-targets" src="https://github.com/user-attachments/assets/89d27b71-46b7-41eb-ab49-6d6cffbd928d" />
+
 
 *Prometheus targets page showing the health of the visible scrape endpoints. This confirms those targets were reachable at the time of inspection, not that every possible target was healthy.*
 
@@ -208,7 +213,8 @@ Prometheus collects metrics from Kubernetes and the monitoring components. Durin
 
 I used the **Kubernetes / Compute Resources / Namespace (Pods)** dashboard filtered to the `aegis` namespace. This provided visibility into CPU and memory use across the application workloads, including the response during a controlled frontend load test.
 
-![Grafana Kubernetes workload CPU and memory dashboards](docs/screenshots/05-grafana-monitoring.png)
+<img width="1842" height="1002" alt="05-grafana-monitoring" src="https://github.com/user-attachments/assets/2844aec0-390c-41c5-9575-d81ca8c2ebbe" />
+
 
 *Grafana namespace dashboard showing resource consumption and the increase in CPU during load testing.*
 
@@ -233,11 +239,13 @@ I configured HTTP probes for both the frontend and backend. The frontend probes 
 
 Readiness probes determine whether a pod should receive Service traffic. Liveness probes allow Kubernetes to restart a container that repeatedly fails its health check. These are related but different responsibilities.
 
-![Frontend Deployment showing health probes and resource settings](docs/screenshots/07-frontend-health-probes.png)
+<img width="1152" height="377" alt="07-frontend-health-probes" src="https://github.com/user-attachments/assets/f807cd79-c7cd-470f-8f7b-a2c3e3dbe3f9" />
+
 
 *Frontend Deployment configuration showing probe settings and CPU and memory requests and limits.*
 
-![Backend Deployment showing health probes](docs/screenshots/08-backend-health-probes.png)
+<img width="1077" height="562" alt="08-backend-health-probes" src="https://github.com/user-attachments/assets/e0b710fc-5f3f-4d50-89de-df132506d693" />
+
 
 *Backend probe configuration. Include this image only if the corresponding screenshot was saved.*
 
@@ -249,7 +257,8 @@ I deliberately deleted a frontend pod to observe how its Deployment and ReplicaS
 
 This demonstrates Kubernetes reconciliation following a pod deletion. It is **not** a measured 16-second customer-facing outage and it is not a liveness-probe failure test. The test was performed on a development workload with a small replica count.
 
-![ReplicaSet events showing frontend pod creation and deletion](docs/screenshots/09-kubernetes-replica-events.png)
+<img width="1212" height="265" alt="09-kubernetes-replica-events" src="https://github.com/user-attachments/assets/1d7ef264-843f-41b5-aa9e-52e394e61b1e" />
+
 
 *ReplicaSet events showing frontend pod lifecycle activity. These events demonstrate replica management, but the screenshot does not independently establish the 16-second recovery measurement.*
 
@@ -297,7 +306,8 @@ kubectl port-forward -n aegis svc/frontend 5678:5678
 
 The application login page was then available at `http://localhost:5678/auth/login`.
 
-![Hi.Events login page running on AKS](docs/screenshots/04-hievents-application.png)
+<img width="1887" height="1057" alt="04-hievents-application" src="https://github.com/user-attachments/assets/a637ddbd-255e-4db6-85e3-53952397780d" />
+
 
 *Hi.Events frontend served from the Kubernetes environment. This demonstrates that the application interface was reachable through the port-forward; it is not evidence of public ingress or a completed end-to-end transaction.*
 
