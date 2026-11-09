@@ -6,7 +6,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 
 spec:
+  {{- if not .Values.frontend.autoscaling.enabled }}
   replicas: {{ .Values.frontend.replicaCount }}
+  {{- end }}
 
   selector:
     matchLabels:
