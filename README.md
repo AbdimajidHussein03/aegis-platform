@@ -100,7 +100,7 @@ The Azure environment is defined under `terraform/environments/dev`, with reusab
 - **ACR module:** Azure Container Registry for container image storage.
 - **Environment composition:** brings the modules together and passes their outputs to dependent resources.
 
-![Azure resources provisioned for Aegis](docs/screenshots/01-azure-infrastructure.png)
+![Azure infrastructure](https://github.com/user-attachments/assets/...)
 
 *Azure resource group showing the infrastructure created for the development platform. Subscription identifiers should be redacted before publishing the screenshot.*
 
