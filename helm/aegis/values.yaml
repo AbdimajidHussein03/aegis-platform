@@ -38,6 +38,14 @@ frontend:
 
   port: 5678
 
+  resources:
+    requests:
+      cpu: 50m
+      memory: 192Mi
+    limits:
+      cpu: 250m
+      memory: 384Mi
+
   api:
     serverUrl: "http://backend:8080"
     clientUrl: "http://localhost:8080"
