@@ -388,29 +388,6 @@ kubectl get pods -n monitoring
 
 These are inspection commands, not a complete installation runbook. Provisioning a new environment also requires Azure credentials, Terraform variables, cluster access, Helm configuration and the relevant application secrets.
 
-## Security considerations
-
-Security is treated as part of the delivery process rather than an afterthought:
-
-- Local Terraform state, backups and variable-value files are excluded from Git.
-- Kubernetes workload definitions reference Secrets instead of embedding credential values directly.
-- GitHub Actions includes build and security scan jobs for the frontend and backend.
-- Kubernetes resource requests and limits help bound workload consumption.
-- The development application was validated through port-forwarding rather than claiming an unverified public ingress configuration.
-
-These controls are useful foundations, not a claim that the environment has passed a formal security assessment. Before a production deployment I would review identity permissions, image provenance, secret rotation, network policy enforcement, vulnerability handling, audit logging and recovery procedures.
-
-## Further improvements
-
-The following are sensible next steps rather than features claimed as already delivered:
-
-1. **Production-grade state and secrets:** remote Terraform state with restricted access, managed secret storage and rotation.
-2. **High availability:** multiple replicas, availability-zone planning, disruption budgets and appropriate database resilience.
-3. **Safer releases:** automated smoke tests, image promotion controls and documented rollback procedures.
-4. **Application-level monitoring:** HTTP error rates, request latency, queue depth, database health and tested alert thresholds.
-5. **External access:** a reviewed ingress design with DNS, TLS, network restrictions and an explicit exposure model.
-6. **Recovery testing:** backup and restore exercises for application data, plus documented recovery objectives.
-7. **Load testing:** repeatable tests that capture throughput, latency and resource saturation, not just autoscaling events.
 
 ## What this project demonstrates
 
